@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Main</title>
+	</head>
+	<body>
+		<div id="app">
+			<h2>{{title}}</h1>
+			<table border="1" style="text-align: center;width: 400px;">
+				<thead style="font-weight: bold;">
+					<tr>
+						<td>用户名</td>
+						<td>密 码</td>
+					</tr>
+				</thead>
+				<tbody>
+					<tr v-for="user in userInfo">
+						<td>{{user.name}}</td>
+						<td>{{user.password}}</td>
+					</tr>
+				</tbody>
+			</table>
+			<button v-on:click="addUser">增加用户</button>
+			<button v-on:click="updateUser">更新用户</button>
+			<button v-on:click="deleteUser">删除用户</button>
+			<button v-on:click="serchUser">查找用户</button>
+		</div>
+
+		<script src="./js/vue.js"></script>
+		<script>
+			const app = new Vue({
+				el: '#app', // 用于挂载要管理的元素
+				data: {
+					// 定义数据
+					title: '已注册用户',
+					userInfo:[
+						{
+							name:'Alice',
+							password:'asd'
+						},
+						{
+							name:'Bob',
+							password:'123'
+						}
+					]
+				},
+				methods:{
+					notice:()=>{
+						console.log('notice');
+					},
+					addUser:(name, password)=> {
+						console.log('addUser');
+					},
+					updateUser:(name, password)=> {
+						console.log('updateUser')
+					},
+					deleteUser:(name, password)=> {
+						console.log('deleteUser')
+					},
+					serchUser: (name, password)=> {
+						console.log('serchUser')
+					},
+				}
+			});
+		</script>
+	</body>
+</html>
