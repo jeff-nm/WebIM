@@ -7,62 +7,82 @@
 	</head>
 	<body>
 		<div id="app">
-			<h2>{{title}}</h1>
-			<table border="1" style="text-align: center;width: 400px;">
-				<thead style="font-weight: bold;">
-					<tr>
-						<td>用户名</td>
-						<td>密 码</td>
-					</tr>
-				</thead>
-				<tbody>
-					<tr v-for="user in userInfo">
-						<td>{{user.name}}</td>
-						<td>{{user.password}}</td>
-					</tr>
-				</tbody>
-			</table>
-			<button v-on:click="addUser">增加用户</button>
-			<button v-on:click="updateUser">更新用户</button>
-			<button v-on:click="deleteUser">删除用户</button>
-			<button v-on:click="serchUser">查找用户</button>
+			<div>
+				<label for="nameInput">连接的id(自己的id)</label>
+				<!-- 连接服务器 （上线）-->
+				<input type="text" v-model="uid" placeholder="请输入您的ID" />
+				<input type="button" value="连接" @click="createWebSocket" />
+			</div>
+			<div>
+				<!-- 连接成功后，给某个id发动信息 -->
+				<label for="senid">给谁发送</label>
+				<input type="text" placeholder="发送到的id" v-model="sendid" />
+			</div>
+			<div>
+				<label for="sendContent">发送的内容</label>
+				<input type="text" placeholder="发送的内容" v-model="sendmsg" />
+				<input type="button" value="发送" @click="sendMessage" />
+			</div>
+			<h3>{{linkStatus}}</h3>
+			<h3>收到的消息</h3>
+			<ul>
+				<li v-for="list in msgList">{{list}}</li>
+			</ul>
 		</div>
 
-		<script src="./js/vue.js"></script>
+		<script src="js/vue.js"></script>
 		<script>
 			const app = new Vue({
 				el: '#app', // 用于挂载要管理的元素
-				data: {
-					// 定义数据
-					title: '已注册用户',
-					userInfo:[
-						{
-							name:'Alice',
-							password:'asd'
-						},
-						{
-							name:'Bob',
-							password:'123'
-						}
-					]
+				data() {
+					return {
+						path: 'ws://112.87.177.60:3000/main?id=',
+						linkStatus: '未连接',
+						uid: '',
+						sendid: '',
+						sendmsg: '',
+						msgList: [],
+						websocket: '',
+					};
 				},
-				methods:{
-					notice:()=>{
-						console.log('notice');
+				destoryed() {
+					this.websocket.onclose = () => {
+						this.linkStatus = 'websocket已经关闭';
+						console.log('websocket已经关闭');
+					};
+				},
+				methods: {
+					createWebSocket() {
+						if (typeof WebSocket === 'undefined') {
+							alert('您的浏览器不支持socket');
+						} else {
+							// 实例化websocket
+							this.websocket = new WebSocket(
+								this.path + this.uid
+							);
+							// 监听websocket连接
+							this.websocket.onopen = () => {
+								this.linkStatus = 'websocket连接成功';
+							};
+							// 监听websocket错误信息
+							this.websocket.onerror = () => {
+								this.linkStatus = 'websocket连接错误';
+							};
+							// 监听websocket消息
+							this.websocket.onmessage = (msg) => {
+								this.msgList.push(msg.data);
+							};
+						}
 					},
-					addUser:(name, password)=> {
-						console.log('addUser');
+					sendMessage() {
+						let data = {
+							uid: this.uid,
+							sendid: this.sendid,
+							sendmsg: this.sendmsg,
+						};
+						this.websocket.send(JSON.stringify(data));
 					},
-					updateUser:(name, password)=> {
-						console.log('updateUser')
-					},
-					deleteUser:(name, password)=> {
-						console.log('deleteUser')
-					},
-					serchUser: (name, password)=> {
-						console.log('serchUser')
-					},
-				}
+				},
 			});
 		</script>
 	</body>
