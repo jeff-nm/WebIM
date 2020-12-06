@@ -17,7 +17,7 @@ router
 		// 插入默认用户名和密码: root 123456
 		sqlOperation = `insert into userinfo (user_name, user_password) select ?,?
     where not exists(select user_name from userinfo where (user_name=?))`;
-		sqlQuery.query(sqlOperation, ['root', '123456', 'root']);
+		sqlQuery.query(sqlOperation, ['11111111111', '123456', '11111111111']);
 
 		ctx.response.type = 'html';
 		ctx.response.body = FS.createReadStream('./views/login.html');

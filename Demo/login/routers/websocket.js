@@ -23,6 +23,12 @@ router.all('/main', (ctx) => {
 			wsObj[sendid].websocket.send(message);
 		}
 	});
+
+	// 连接关闭
+	ctx.websocket.addEventListener('close', () => {
+		ctx.websocket.close();
+		console.log('websocket closed');
+	});
 });
 
 module.exports = router;

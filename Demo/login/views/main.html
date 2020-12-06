@@ -36,7 +36,7 @@
 				el: '#app', // 用于挂载要管理的元素
 				data() {
 					return {
-						path: 'ws://112.87.177.60:3000/main?id=',
+						path: 'ws://localhost:3000/main?id=',
 						linkStatus: '未连接',
 						uid: '',
 						sendid: '',
@@ -47,6 +47,7 @@
 				},
 				destoryed() {
 					this.websocket.onclose = () => {
+						this.websocket.close();
 						this.linkStatus = 'websocket已经关闭';
 						console.log('websocket已经关闭');
 					};
